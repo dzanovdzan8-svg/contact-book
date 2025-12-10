@@ -1,72 +1,74 @@
 import { useState } from 'react';
 
-export default function ContactItem({ contact, onDelete, theme }) {
-  const { name, phone, description } = contact;
-  const [isHovered, setIsHovered] = useState(false);
+export default function ContactItem({ contact, onDelete, onEdit }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(contact.name);
+  const [phone, setPhone] = useState(contact.phone);
+
+  const handleSave = () => {
+    if (name.trim() && phone.trim()) {
+      onEdit(contact.id, name, phone);
+      setIsEditing(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setName(contact.name);
+    setPhone(contact.phone);
+    setIsEditing(false);
+  };
 
   return (
-    <div
-      style={{
-        padding: '16px',
-        marginBottom: '12px',
-        borderRadius: '12px',
-        border: `1px solid ${theme.accent}40`,
-        backgroundColor: `${theme.accent}08`,
-        color: theme.text,
-        boxShadow: isHovered ? `0 6px 16px ${theme.accent}20` : theme.shadow,
-        transition: `${theme.transition}, box-shadow 0.3s ease`,
-        cursor: 'pointer',
-        animation: 'fadeIn 0.5s ease-in-out',
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          marginBottom: '8px',
-        }}
-      >
-        <div>
-          <strong style={{ fontSize: '1.1rem', color: theme.accent }}>{name}</strong>
-          <div style={{ marginTop: '4px', fontSize: '0.9rem' }}>📞 {phone}</div>
-        </div>
-        <button
-          onClick={() => onDelete(contact.id)}
-          style={{
-            padding: '6px 12px',
-            borderRadius: '6px',
-            backgroundColor: theme.accent,
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '0.8rem',
-            transition: 'background-color 0.2s ease',
-          }}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = '#4a90e2')}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = theme.accent)}
-        >
-          Удалить
-        </button>
-      </div>
-      {description && (
-        <div
-          style={{
-            marginTop: '8px',
-            fontStyle: 'italic',
-            fontSize: '0.9rem',
-            lineHeight: '1.4',
-            padding: '8px',
-            backgroundColor: `${theme.accent}10`,
-            borderRadius: '8px',
-          }}
-        >
-          {description}
-        </div>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '12px',
+      margin: '8px 0',
+      border: '1px solid #3498db',
+      borderRadius: '8px',
+      backgroundColor: '#f0f8ff'
+    }}>
+      {isEditing ? (
+        <>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={{ marginRight: '8px', padding: '4px', width: '40%' }}
+          />
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            style={{ marginRight: '8px', padding: '4px', width: '40%' }}
+          />
+          <button onClick={handleSave} style={{ backgroundColor: '#2ecc71', color: 'white', border: 'none', borderRadius: '4px', padding: '4px 8px' }}>
+            Сохранить
+          </button>
+          <button onClick={handleCancel} style={{ backgroundColor: '#e74c3c', color: 'white', border: 'none', borderRadius: '4px', padding: '4px 8px', marginLeft: '6px' }}>
+            Отмена
+          </button>
+        </>
+      ) : (
+        <>
+          <span><strong>{name}</strong> — {phone}</span>
+          <div>
+            <button
+              onClick={() => setIsEditing(true)}
+              style={{ backgroundColor: '#3498db', color: 'white', border: 'none', borderRadius: '4px', padding: '4px 8px', marginRight: '6px' }}
+            >
+              Редактировать
+            </button>
+            <button
+              onClick={() => onDelete(contact.id)}
+              style={{ backgroundColor: '#e74c3c', color: 'white', border: 'none', borderRadius: '4px', padding: '4px 8px' }}
+            >
+              Удалить
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
 }
-
