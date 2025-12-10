@@ -1,10 +1,12 @@
 import ContactItem from './ContactItem';
 
-export default function ContactList({ contacts, onDelete, onEdit }) {
+export default function ContactList({ contacts, onDelete, onEdit, theme }) {
   return (
     <div>
       {contacts.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#7f8c8d' }}>Нет контактов</p>
+        <p style={{ textAlign: 'center', color: '#7f8c8d', fontStyle: 'italic' }}>
+          Нет контактов
+        </p>
       ) : (
         contacts.map(contact => (
           <ContactItem
@@ -12,6 +14,7 @@ export default function ContactList({ contacts, onDelete, onEdit }) {
             contact={contact}
             onDelete={onDelete}
             onEdit={onEdit}
+            theme={theme}
           />
         ))
       )}
